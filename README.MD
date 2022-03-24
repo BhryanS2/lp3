@@ -14,3 +14,5 @@
 - [Tecnologias da Web]('./tecnologias_da_web/README.MD')
 - [Projeto de Software Orientado a Objeto]('./PSOO/README.MD')
 - [Projetos Integradores]('./PI/README.MD')
+
+- [Notion](https://silver-bakery-ca4.notion.site/3-ano-escolar-4857c58320814a7a9c6af4b012952e45)
