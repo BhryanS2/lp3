@@ -38,8 +38,8 @@ class _JogadorState extends State<Jogador> {
             child: ListView.builder(
               itemCount: _lista.length,
               itemBuilder: (context, index) {
-                return Row(
-                  children: [Text(_lista[index])],
+                return ListTile(
+                  title: Text(_lista[index]),
                 );
               },
             ),
