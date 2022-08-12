@@ -47,7 +47,7 @@ export class UpdateProfileService {
       throw new Error("Challenge not found");
     }
 
-    const userProfileUpdate = await prisma.userProfile.update({
+    await prisma.userProfile.update({
       where: {
         id: userId,
       },
@@ -62,6 +62,22 @@ export class UpdateProfileService {
         },
       },
     });
-    return userProfileUpdate;
+
+    const profile = await prisma.userProfile.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+
+    const challengeCompleted = await prisma.challengesCompleted.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return {
+      userProfile: profile,
+      challengesCompleted: challengeCompleted.length,
+    };
   }
 }
