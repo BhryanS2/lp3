@@ -9,13 +9,11 @@ class EntradaDeDados extends StatefulWidget {
 
 class _EntradaDeDadosState extends State<EntradaDeDados> {
   int? _escolhaUsuario = 0;
+  bool _switchValue = false;
   bool? _checkBoxValue = false;
-
-  void setRadioValue(int? valor) {
-    setState(() {
-      _escolhaUsuario = valor;
-    });
-  }
+  int? _radioValue = 0;
+  int? _sliderValue = 0;
+  String? _nome = '';
 
   @override
   Widget build(BuildContext context) {
@@ -27,47 +25,71 @@ class _EntradaDeDadosState extends State<EntradaDeDados> {
         children: <Widget>[
           TextField(
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: "Seu nome"),
-            style: TextStyle(fontSize: 16, color: Colors.black),
+            decoration: const InputDecoration(labelText: "Seu nome"),
+            style: const TextStyle(fontSize: 16, color: Colors.black),
+            onChanged: (String value) {
+              setState(() {
+                _nome = value;
+              });
+            },
           ),
 
           // Escolha da imagem
           Column(
             children: <Widget>[
+              // radios
               RadioListTile(
                 title: const Text("Masculino"), //titulo da lista
                 value: 1, //tipo do valor do campo
-                groupValue: _escolhaUsuario, // tipo do grupo
+                groupValue: _radioValue, // tipo do grupo
                 onChanged: (int? escolha) {
                   setState(() {
-                    _escolhaUsuario = escolha;
+                    _radioValue = escolha;
                   });
                 },
               ),
               RadioListTile(
                 value: 2,
-                groupValue: _escolhaUsuario,
-                onChanged: setRadioValue,
-                title: Text("Feminino"),
+                groupValue: _radioValue,
+                onChanged: (int? escolha) {
+                  setState(() {
+                    _radioValue = escolha;
+                  });
+                },
+                title: const Text("Feminino"),
               )
             ],
           ),
-          // ACeita notificações
+          // ACeita notificações - Switch
           SwitchListTile(
             title: const Text("Aceita notificações"),
-            value: _escolhaUsuario == 1,
-            onChanged: (bool valor) {
+            value: _switchValue,
+            onChanged: (bool escolha) {
               setState(() {
-                _escolhaUsuario = valor ? 1 : 0;
+                _switchValue = escolha;
               });
             },
           ),
+          // CheckBox
           CheckboxListTile(
             title: const Text("Aceita notificações"),
-            value: _escolhaUsuario == 1,
+            value: _checkBoxValue,
             onChanged: (bool? valor) {
               setState(() {
-                _checkBoxValue = !valor;
+                _checkBoxValue = valor;
+              });
+            },
+          ),
+          // Slider
+          Slider(
+            value: _sliderValue?.toDouble() ?? 0,
+            min: 0,
+            max: 10,
+            divisions: 10,
+            label: "${_sliderValue?.toDouble() ?? 0}",
+            onChanged: (double valor) {
+              setState(() {
+                _sliderValue = valor.round();
               });
             },
           ),
