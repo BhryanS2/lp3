@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class EntradaDeDados extends StatefulWidget {
-  const EntradaDeDados({Key? key}) : super(key: key);
+class Forms extends StatefulWidget {
+  const Forms({Key? key}) : super(key: key);
 
   @override
-  _EntradaDeDadosState createState() => _EntradaDeDadosState();
+  _FormsState createState() => _FormsState();
 }
 
-class _EntradaDeDadosState extends State<EntradaDeDados> {
+class _FormsState extends State<Forms> {
   int? _escolhaUsuario = 0;
   bool _switchValue = false;
   bool? _checkBoxValue = false;
