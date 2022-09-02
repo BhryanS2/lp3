@@ -1,3 +1,4 @@
+import 'package:app/aula_1_09/FormData.dart';
 import 'package:app/aula_1_09/TelaSecundaria.dart';
 import 'package:app/projeto_1_9/Home.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _MyFormState extends State<MyForm> {
 
   bool? _isAgreeTerms = false;
   bool _isAgreeNotifications = false;
-  int? _selectedRadio;
+  int? _selectedRadio = 0;
   double _age = 0;
 
   List fieldsValues = [];
@@ -284,12 +285,16 @@ class _MyFormState extends State<MyForm> {
                       _selectedRadio,
                       fieldsValues
                     };
+                    // print("Data to submit: $dataToSubmit");
+                    // print(dataToSubmit);
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TelaSecundaria(
-                                  valor: dataToSubmit,
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FormData(
+                          dataRecieved: fieldsValues,
+                        ),
+                      ),
+                    );
                   }
                 },
               ),

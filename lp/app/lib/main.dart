@@ -1,3 +1,4 @@
+import 'package:app/ana/index.dart';
 import 'package:app/aula_18_08/form.dart';
 import 'package:app/aula_1_09/TelaSecundaria.dart';
 import 'package:app/projeto_1_9/Home.dart';
@@ -67,6 +68,15 @@ class MyApp extends StatelessWidget {
                     child: const Text("Projeto da aula 01/9"),
                   );
                 }),
+                Builder(builder: (context) {
+                  return MaterialButton(
+                    onPressed: () {
+                      navigate(context, AnaForm());
+                    },
+                    color: Colors.red[700],
+                    child: const Text("Projeto da Ana"),
+                  );
+                })
               ],
             ),
           ),
