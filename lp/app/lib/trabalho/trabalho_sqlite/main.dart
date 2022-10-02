@@ -1,6 +1,5 @@
 // @dart=2.9
 
-
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
@@ -18,8 +17,22 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class DatabaseController {
-  int id;
+class _HomeState extends State<Home> {
+  /*
+    id -> integer pk ai
+    nome -> string
+    sobrenome -> string
+    idade -> integer
+    email -> string
+    telefone -> string
+    */
+  int _id = -1;
+  TextEditingController _controllerFirstName = TextEditingController();
+  TextEditingController _controllerLastName = TextEditingController();
+  TextEditingController _controllerAge = TextEditingController();
+  TextEditingController _controllerEmail = TextEditingController();
+  TextEditingController _controllerPhone = TextEditingController();
+
   String firstName;
   String lastName;
   int age;
@@ -28,16 +41,19 @@ class DatabaseController {
 
   _setAllData(
       int id, String firstName, String lastName, int age, String email) {
-    this.id = id;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.age = age;
-    this.email = email;
+    setState(() {
+      _id = id;
+      _controllerFirstName.text = firstName;
+      _controllerLastName.text = lastName;
+      _controllerAge.text = age.toString();
+      _controllerEmail.text = email;
+      _controllerPhone.text = phone;
+    });
   }
 
   _getAllData() {
     return {
-      'id': id,
+      'id': _id,
       'firstName': firstName,
       'lastName': lastName,
       'age': age,
@@ -61,11 +77,11 @@ class DatabaseController {
   }
 
   _existsUser() async {
-    if (id == -1) {
+    if (_id == -1) {
       return false;
     }
     Database db = await _getDatabase();
-    final user = await db.query('users', where: 'id = ?', whereArgs: [id]);
+    final user = await db.query('users', where: 'id = ?', whereArgs: [_id]);
     if (user.isEmpty) {
       return false;
     }
@@ -82,11 +98,13 @@ class DatabaseController {
       'telefone': phone,
     };
     int id = await db.insert('users', dadosUsuario);
-    this.id = id;
+    setState(() {
+      _id = id;
+    });
   }
 
   _alter() async {
-    if (id == -1) {
+    if (_id == -1) {
       return;
     }
     if (!_existsUser()) {
@@ -100,34 +118,33 @@ class DatabaseController {
       'email': email,
       'telefone': phone,
     };
-    await db.update('users', dadosUsuario, where: 'id = ?', whereArgs: [id]);
-    _setAllData(id, firstName, lastName, age, email);
+    await db.update('users', dadosUsuario, where: 'id = ?', whereArgs: [_id]);
+    _setAllData(_id, firstName, lastName, age, email);
   }
 
   _getUser() async {
-    this.id = id;
-    if (id == -1) {
+    if (_id == -1) {
       return;
     }
     if (!_existsUser()) {
       return;
     }
     Database db = await _getDatabase();
-    final user = await db.query('users', where: 'id = ?', whereArgs: [id]);
+    final user = await db.query('users', where: 'id = ?', whereArgs: [_id]);
     _setAllData(user[0]['id'], user[0]['nome'], user[0]['sobrenome'],
         user[0]['idade'], user[0]['email']);
     return user;
   }
 
   _delete() async {
-    if (id == -1) {
+    if (_id == -1) {
       return;
     }
     if (!_existsUser()) {
       return;
     }
     Database db = await _getDatabase();
-    await db.delete('users', where: 'id = ?', whereArgs: [id]);
+    await db.delete('users', where: 'id = ?', whereArgs: [_id]);
     _setAllData(-1, "", "", -1, "");
   }
 
@@ -136,24 +153,7 @@ class DatabaseController {
     final users = await db.query('users');
     return users;
   }
-}
 
-class _HomeState extends State<Home> {
-  /*
-    id -> integer pk ai
-    nome -> string
-    sobrenome -> string
-    idade -> integer
-    email -> string
-    telefone -> string
-    */
-  int _id = -1;
-  TextEditingController _controllerFirstName = TextEditingController();
-  TextEditingController _controllerLastName = TextEditingController();
-  TextEditingController _controllerAge = TextEditingController();
-  TextEditingController _controllerEmail = TextEditingController();
-  TextEditingController _controllerPhone = TextEditingController();
-  final database = DatabaseController();
   _clearFields() {
     _controllerFirstName.text = "";
     _controllerLastName.text = "";
@@ -202,46 +202,46 @@ class _HomeState extends State<Home> {
               ),
               MaterialButton(
                 onPressed: () {
-                  database._setAllData(
+                  _setAllData(
                       _id,
                       _controllerFirstName.text,
                       _controllerLastName.text,
                       int.parse(_controllerAge.text),
                       _controllerEmail.text);
-                  database._save();
+                  _save();
                   _clearFields();
                 },
                 child: Text("Salvar"),
               ),
               MaterialButton(
                 onPressed: () {
-                  database._setAllData(
+                  _setAllData(
                       _id,
                       _controllerFirstName.text,
                       _controllerLastName.text,
                       int.parse(_controllerAge.text),
                       _controllerEmail.text);
-                  database._alter();
+                  _alter();
                   _clearFields();
                 },
                 child: Text("Alterar"),
               ),
               MaterialButton(
                 onPressed: () {
-                  database._setAllData(
+                  _setAllData(
                       _id,
                       _controllerFirstName.text,
                       _controllerLastName.text,
                       int.parse(_controllerAge.text),
                       _controllerEmail.text);
-                  database._delete();
+                  _delete();
                   _clearFields();
                 },
                 child: Text("Excluir"),
               ),
               Material(
                 child: FutureBuilder(
-                  future: database._getUser(),
+                  future: _getUser(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Text(snapshot.data[0]['nome']);
@@ -254,7 +254,7 @@ class _HomeState extends State<Home> {
               Text("Dados do banco de dados"),
               Material(
                 child: FutureBuilder(
-                  future: database._getAllUsers(),
+                  future: _getAllUsers(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return ListView.builder(
